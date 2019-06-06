@@ -52,6 +52,7 @@ cd /usr/src/asterisk
 curl -vsL http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-${ASTERISK_VERSION}.tar.gz | tar --strip-components 1 -xz
 
 # 1.5 jobs per core works out okay
+
 : ${JOBS:=$(( $(nproc) + $(nproc) / 2 ))}
 
 ./configure --with-resample \
