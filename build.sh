@@ -60,6 +60,9 @@ curl -vsL http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-${ASTERI
             --with-jansson-bundled
 make menuselect/menuselect menuselect-tree menuselect.makeopts
 
+# We use pjsip
+# menuselect/menuselect --disable chan_sip menuselect.makeopts
+
 # disable BUILD_NATIVE to avoid platform issues
 menuselect/menuselect --disable BUILD_NATIVE menuselect.makeopts
 
@@ -86,6 +89,11 @@ mkdir -p /usr/src/codecs/opus \
   && cp *.so /usr/lib/asterisk/modules/ \
   && cp codec_opus_config-en_US.xml /var/lib/asterisk/documentation/
 
+# We make a self signed CA and cert at docker runtime, doctor Asterisk script for this
+#  so it doesnt need an interactive terminal for CA passphrase
+sed -e 's/\(openssl genrsa\) -des3/\1/' < /usr/src/asterisk/contrib/scripts/ast_tls_cert > /usr/sbin/ast_tls_cert
+chmod 550 /usr/sbin/ast_tls_cert
+
 mkdir -p /etc/asterisk/ \
          /var/spool/asterisk/fax
 
@@ -94,7 +102,7 @@ chown -R asterisk:asterisk /etc/asterisk \
                            /usr/*/asterisk
 chmod -R 750 /var/spool/asterisk
 
-cd /
+
 rm -rf /usr/src/asterisk \
        /usr/src/codecs
 
