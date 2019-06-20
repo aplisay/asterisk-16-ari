@@ -61,7 +61,20 @@ curl -vsL http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-${ASTERI
 make menuselect/menuselect menuselect-tree menuselect.makeopts
 
 # We use pjsip
-# menuselect/menuselect --disable chan_sip menuselect.makeopts
+menuselect/menuselect --disable chan_sip \
+                      --disable chan_dahdi \
+                      --disable chan_unistim \
+                      --disable chan_mgcp \
+                      --disable chan_skinny \
+                      --disable chan_iax2 menuselect.makeopts
+
+menuselect/menuselect --disable res_ari \
+                      --disable res_fax menuselect.makeopts
+
+menuselect/menuselect --disable app_voicemail \
+                      --disable app_adsiprog \
+                      --disable app_dictate menuselect.makeopts
+
 
 # disable BUILD_NATIVE to avoid platform issues
 menuselect/menuselect --disable BUILD_NATIVE menuselect.makeopts
@@ -101,7 +114,6 @@ chown -R asterisk:asterisk /etc/asterisk \
                            /var/*/asterisk \
                            /usr/*/asterisk
 chmod -R 750 /var/spool/asterisk
-
 
 rm -rf /usr/src/asterisk \
        /usr/src/codecs
