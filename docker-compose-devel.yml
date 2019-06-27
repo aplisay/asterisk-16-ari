@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  asterisk-16-ari:
+    build:
+      context: .
+    restart: unless-stopped
+    container_name: asterisk-16-ari
+    ports:
+      - "5061:5061"
+      - "443:443"
+      - "80:80"
+    environment:
+      - TRUNK_TYPE
+      - TRUNK_ACCOUNT
+      - TRUNK_PASSWORD
+    volumes:
+      - ./etc/asterisk:/etc/asterisk
