@@ -1,4 +1,16 @@
 #!/bin/bash
+# run as user asterisk
+ASTERISK_USER=${ASTERISK_USER:-asterisk}
+ASTERISK_DOMAIN=${ASTERISK_DOMAIN:-localhost.localdomin}
+ASTERISK_ORG=${ASTERISK_ORG:-AcmeWidgets}
+
+# Horrid insecure defaults CHANGEME
+ARI_USER=${ASTERISK_USER:-asterisk}
+ARI_PASSWORD=${ARI_PASSWORD:-asterisk}
+ARI_APPLICATION=${ARI_APPLICATION:-myApp}
+
+export ARI_USER ARI_PASSWORD ARI_APPLICATION
+
 SUBST=" "
 for VAR in $(env);
 do
@@ -7,11 +19,6 @@ do
   SUBST+=`printf "%ss/___%s___/%s/" " -e " "\\\$$NAME" "$EVALUE"`
 done
 
-
-# run as user asterisk
-ASTERISK_USER=${ASTERISK_USER:-asterisk}
-ASTERISK_DOMAIN=${ASTERISK_DOMAIN:-localhost.localdomin}
-ASTERISK_ORG=${ASTERISK_ORG:-AcmeWidgets}
 
 if [ "$1" = "" ]; then
   COMMAND="/usr/sbin/asterisk -T -W -U ${ASTERISK_USER} -p -vvvdddf"
