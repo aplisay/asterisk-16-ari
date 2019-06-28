@@ -68,8 +68,7 @@ menuselect/menuselect --disable chan_sip \
                       --disable chan_skinny \
                       --disable chan_iax2 menuselect.makeopts
 
-menuselect/menuselect --disable res_ari \
-                      --disable res_fax menuselect.makeopts
+menuselect/menuselect --disable res_fax menuselect.makeopts
 
 menuselect/menuselect --disable app_voicemail \
                       --disable app_adsiprog \
