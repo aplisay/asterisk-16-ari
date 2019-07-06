@@ -5,7 +5,7 @@ ASTERISK_DOMAIN=${ASTERISK_DOMAIN:-localhost.localdomin}
 ASTERISK_ORG=${ASTERISK_ORG:-AcmeWidgets}
 
 # Horrid insecure defaults CHANGEME
-ARI_USER=${ASTERISK_USER:-asterisk}
+ARI_USER=${ARI_USER:-asterisk}
 ARI_PASSWORD=${ARI_PASSWORD:-asterisk}
 ARI_APPLICATION=${ARI_APPLICATION:-myApp}
 
