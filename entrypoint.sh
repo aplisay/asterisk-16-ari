@@ -58,4 +58,5 @@ if [ "${ASTERISK_UID}" != "" ] && [ "${ASTERISK_GID}" != "" ]; then
                                            /usr/*/asterisk
 fi
 
+echo Executing: ${COMMAND}
 exec ${COMMAND}
