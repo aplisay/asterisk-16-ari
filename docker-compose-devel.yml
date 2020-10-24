@@ -7,6 +7,7 @@ services:
     restart: unless-stopped
     container_name: asterisk-16-ari
     ports:
+      - "5060:5060"
       - "5061:5061"
       - "8443:8443"
       - "8080:8080"

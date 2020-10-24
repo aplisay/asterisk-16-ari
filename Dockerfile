@@ -9,7 +9,7 @@ COPY build.sh /
 COPY templates /templates
 RUN /build.sh
 
-EXPOSE 5061/tcp 8080/tcp 8443/tcp
+EXPOSE 5060/udp 5061/tcp 8080/tcp 8443/tcp
 VOLUME /var/spool/asterisk /var/log/asterisk
 
 COPY entrypoint.sh /
