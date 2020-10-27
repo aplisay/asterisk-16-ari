@@ -17,6 +17,7 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends --no-i
     build-essential \
     ca-certificates \
     curl \
+    dnsutils \
     file \
     libcurl4-openssl-dev \
     libedit-dev \

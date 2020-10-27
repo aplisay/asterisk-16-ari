@@ -9,6 +9,8 @@ ARI_USER=${ARI_USER:-asterisk}
 ARI_PASSWORD=${ARI_PASSWORD:-asterisk}
 ARI_APPLICATION=${ARI_APPLICATION:-myApp}
 
+export MY_IP=`dig +short myip.opendns.com @resolver1.opendns.com`
+
 export ARI_USER ARI_PASSWORD ARI_APPLICATION SIP_REGISTRAR
 
 SUBST=" "
