@@ -16,6 +16,7 @@ steps:
   args:
   - run
   - --filename=k8s/deployment.yaml
+  - --image=gcr.io/$PROJECT_ID/asterisk-16-ari:$SHORT_SHA
   - --location=$_K8S_ZONE
   - --cluster=$_K8S_CLUSTER
 images:
