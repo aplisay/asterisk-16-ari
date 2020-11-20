@@ -1,4 +1,3 @@
-# This is the vanilla Google Cloud Build spec, for K8s version, see k8s/cloudbuild.yaml
 steps:
 - name: 'docker'
   args: ['build', '-t', 'gcr.io/$PROJECT_ID/asterisk-16-ari:$SHORT_SHA', '.']
@@ -12,5 +11,12 @@ steps:
   args: ['push', 'gcr.io/$PROJECT_ID/asterisk-16-ari:latest']
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'gcr.io/$PROJECT_ID/asterisk-16-ari:$BRANCH_NAME']
+# deploy container image to GKE
+- name: "gcr.io/cloud-builders/gke-deploy"
+  args:
+  - run
+  - --filename=k8s/deployment.yaml
+  - --location=europe-west2
+  - --cluster=smbconnect
 images:
 - 'gcr.io/$PROJECT_ID/asterisk-16-ari:$BRANCH_NAME'
