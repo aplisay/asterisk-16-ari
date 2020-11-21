@@ -1,23 +1,52 @@
 steps:
-- name: 'docker'
-  args: ['build', '-t', 'gcr.io/$PROJECT_ID/asterisk-16-ari:$SHORT_SHA', '.']
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['tag', 'gcr.io/$PROJECT_ID/asterisk-16-ari:$SHORT_SHA', 'gcr.io/$PROJECT_ID/asterisk-16-ari:latest']
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/$REPO_NAME:$SHORT_SHA', '.']
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['tag', 'gcr.io/$PROJECT_ID/asterisk-16-ari:$SHORT_SHA', 'gcr.io/$PROJECT_ID/asterisk-16-ari:$BRANCH_NAME']
+  args: ['tag', 'gcr.io/$PROJECT_ID/$REPO_NAME:$SHORT_SHA', 'gcr.io/$PROJECT_ID/$REPO_NAME:latest']
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/$PROJECT_ID/asterisk-16-ari:$SHORT_SHA']
+  args: ['tag', 'gcr.io/$PROJECT_ID/$REPO_NAME:$SHORT_SHA', 'gcr.io/$PROJECT_ID/$REPO_NAME:$BRANCH_NAME']
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/$PROJECT_ID/asterisk-16-ari:latest']
+  args: ['push', 'gcr.io/$PROJECT_ID/$REPO_NAME:$SHORT_SHA']
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/$PROJECT_ID/asterisk-16-ari:$BRANCH_NAME']
+  args: ['push', 'gcr.io/$PROJECT_ID/$REPO_NAME:latest']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/$PROJECT_ID/$REPO_NAME:$BRANCH_NAME']
+- name: gcr.io/cloud-builders/gcloud
+  entrypoint: 'bash'
+  args: [ '-c', 'gcloud secrets versions access latest --secret=GitHubSMBConnectDeploy > /root/.ssh/id_github' ]
+  volumes:
+  - name: 'ssh'
+    path: /root/.ssh
+- name: 'gcr.io/cloud-builders/git'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    chmod 600 /root/.ssh/id_github
+    cat <<EOF >/root/.ssh/config
+    Hostname github.com
+    User git
+    PubkeyAuthentication yes
+    IdentityFile /root/.ssh/id_github
+    EOF
+    ssh-keyscan -t rsa github.com > /root/.ssh/known_hosts
+    chmod -R og-rwx /root/.ssh
+    git clone $_K8S_CONFIG_REPO
+    cd $_K8S_CONFIG_PATH/voice-gw/
+    sed -i -e "s/\\(image: gcr.io\\/$PROJECT_ID\\/$REPO_NAME\\).*/\\1:$SHORT_SHA/" deployment.yaml
+    cat deployment.yaml
+    git config user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)')
+    git commit -a -m "Bump $REPO_NAME via CI"
+    git push
+  volumes:
+  - name: 'ssh'
+    path: /root/.ssh
 # deploy container image to GKE
 - name: "gcr.io/cloud-builders/gke-deploy"
   args:
   - run
-  - --filename=k8s/deployment.yaml
-  - --image=gcr.io/$PROJECT_ID/asterisk-16-ari:$SHORT_SHA
+  - --filename=$_K8S_CONFIG_PATH/voice-gw/deployment.yaml
   - --location=$_K8S_ZONE
   - --cluster=$_K8S_CLUSTER
 images:
-- 'gcr.io/$PROJECT_ID/asterisk-16-ari:$BRANCH_NAME'
+- 'gcr.io/$PROJECT_ID/$REPO_NAME:$BRANCH_NAME'
