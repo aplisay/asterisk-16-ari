@@ -34,7 +34,6 @@ steps:
     git clone $_K8S_CONFIG_REPO
     cd $_K8S_CONFIG_PATH/voice-gw/
     sed -i -e "s/\\(image: gcr.io\\/$PROJECT_ID\\/$REPO_NAME\\).*/\\1:$SHORT_SHA/" deployment.yaml
-    cat deployment.yaml
     git config user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)')
     git commit -a -m "Bump $REPO_NAME via CI"
     git push
