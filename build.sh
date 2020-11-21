@@ -135,4 +135,7 @@ DEBIAN_FRONTEND=noninteractive apt-get --yes purge \
   ${devpackages}
 rm -rf /var/lib/apt/lists/*
 
+echo "lookup file bind" >>/etc/resolv.conf
+
+
 exec rm -f /build.sh
